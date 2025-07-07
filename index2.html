@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lọc Danh Sách Sinh Nhật</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .filter-section {
+            padding: 20px;
+            background: var(--light);
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #2980b9;
+        }
+        
+        .results-section {
+            padding: 20px;
+        }
+        
+        .birthday-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .birthday-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-header {
+            background: var(--secondary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .employee-name {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .employee-position {
+            margin: 5px 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: var(--gray);
+        }
+        
+        .info-value {
+            font-weight: bold;
+        }
+        
+        .birthday-date {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 4px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 600px) {
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-birthday-cake"></i> Lọc Danh Sách Sinh Nhật</h1>
+        </header>
+        
+        <div class="filter-section">
+            <form id="filterForm" class="filter-form">
+                <div class="form-group">
+                    <label for="month">Tháng</label>
+                    <select id="month" name="month">
+                        <option value="">Tất cả tháng</option>
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Phòng ban</label>
+                    <select id="department" name="department">
+                        <option value="">Tất cả phòng ban</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">Tên nhân viên</label>
+                    <input type="text" id="name" name="name" placeholder="Nhập tên nhân viên">
+                </div>
+            </form>
+            
+            <div class="filter-actions">
+                <button type="button" class="btn-secondary" onclick="resetFilters()">
+                    <i class="fas fa-undo"></i> Đặt lại
+                </button>
+                <button type="button" class="btn-primary" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Lọc dữ liệu
+                </button>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="birthday-grid" id="resultsContainer">
+                <div class="no-results">
+                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>Vui lòng chọn điều kiện lọc và nhấn "Lọc dữ liệu"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API endpoint from your Google Apps Script
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxYL7XBJXMBDiuFEQwpAWPgPa1WBAtI2bYWI99PtHrfUCJkzPchhy86C7wN986I6I4/exec';
+        
+        // Departments data - in a real app you might fetch this from the API
+        const departments = [
+            "Ban Giám đốc",
+            "Phòng Kế toán",
+            "Phòng Nhân sự",
+            "Phòng Marketing",
+            "Phòng Kỹ thuật",
+            "Phòng Kinh doanh"
+        ];
+        
+        // Populate department dropdown
+        const departmentSelect = document.getElementById('department');
+        departments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept;
+            option.textContent = dept;
+            departmentSelect.appendChild(option);
+        });
+        
+        // Parse URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                month: params.get('month') || '',
+                department: params.get('department') || '',
+                name: params.get('name') || ''
+            };
+        }
+        
+        // Set form values from URL parameters
+        function setFormFromUrl() {
+            const params = getUrlParams();
+            document.getElementById('month').value = params.month;
+            document.getElementById('department').value = params.department;
+            document.getElementById('name').value = params.name;
+            
+            if (params.month || params.department || params.name) {
+                fetchData();
+            }
+        }
+        
+        // Apply filters - update URL and fetch data
+        function applyFilters() {
+            const month = document.getElementById('month').value;
+            const department = document.getElementById('department').value;
+            const name = document.getElementById('name').value;
+            
+            const params = new URLSearchParams();
+            if (month) params.append('month', month);
+            if (department) params.append('department', department);
+            if (name) params.append('name', name);
+            
+            // Update URL without reloading the page
+            window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+            
+            fetchData();
+        }
+        
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('filterForm').reset();
+            window.history.pushState({}, '', window.location.pathname);
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>Vui lòng chọn điều kiện lọc và nhấn "Lọc dữ liệu"</p>
+                </div>
+            `;
+        }
+        
+        // Fetch data from Google Apps Script
+        async function fetchData() {
+            const params = getUrlParams();
+            const queryParams = new URLSearchParams();
+            
+            if (params.month) queryParams.append('month', params.month);
+            if (params.department) queryParams.append('department', params.department);
+            if (params.name) queryParams.append('name', params.name);
+            
+            try {
+                const response = await fetch(`${API_URL}?${queryParams.toString()}`);
+                const data = await response.json();
+                
+                displayResults(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('resultsContainer').innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Display results in the grid
+        function displayResults(data) {
+            const container = document.getElementById('resultsContainer');
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Không tìm thấy kết quả phù hợp với điều kiện lọc</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            data.forEach(employee => {
+                const card = document.createElement('div');
+                card.className = 'birthday-card';
+                
+                // Format birthday date
+                const birthday = new Date(employee.birthday);
+                const formattedDate = birthday.toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="employee-name">${employee.name}</h3>
+                        <p class="employee-position">${employee.position || 'Nhân viên'}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label">Phòng ban:</span>
+                            <span class="info-value">${employee.department || '-'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Giới tính:</span>
+                            <span class="info-value">${employee.gender === 'Nam' ? 'Nam' : 'Nữ'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Mã NV:</span>
+                            <span class="info-value">${employee.code || '-'}</span>
+                        </div>
+                        <div class="birthday-date">
+                            <i class="fas fa-birthday-cake"></i> ${formattedDate}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            setFormFromUrl();
+        });
+    </script>
+</body>
+</html>
